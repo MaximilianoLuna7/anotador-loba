@@ -31,7 +31,7 @@ function SortableItem({ player, index }) {
       style={style}
       {...attributes}
       {...listeners}
-      className="bg-white px-3 py-2 rounded shadow mb-2 flex items-center justify-between cursor-move"
+      className="bg-white px-3 py-2 rounded shadow mb-2 flex items-center justify-between cursor-move touch-manipulation"
     >
       <span>
         {index + 1}. {player.name}
@@ -42,7 +42,12 @@ function SortableItem({ player, index }) {
 
 function PlayerDraggableList({ players, onReorder }) {
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        delay: 200,
+        tolerance: 5,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -53,18 +58,17 @@ function PlayerDraggableList({ players, onReorder }) {
   const handleDragEnd = (event) => {
     const { active, over } = event;
 
-    if (active.id !== over.id) {
-      const oldIndex = localOrder.indexOf(active.id);
-      const newIndex = localOrder.indexOf(over.id);
-      const newOrder = arrayMove(localOrder, oldIndex, newIndex);
-      setLocalOrder(newOrder);
+    if (active.id !== over?.id) return;
 
-      // Informar al componente padre el nuevo orden
-      const reorderedPlayers = newOrder.map((id) =>
-        players.find((p) => p.id === id)
-      );
-      onReorder(reorderedPlayers);
-    }
+    const oldIndex = localOrder.indexOf(active.id);
+    const newIndex = localOrder.indexOf(over.id);
+    const newOrder = arrayMove(localOrder, oldIndex, newIndex);
+    setLocalOrder(newOrder);
+
+    const reorderedPlayers = newOrder.map((id) =>
+      players.find((p) => p.id === id)
+    );
+    onReorder(reorderedPlayers);
   };
 
   return (

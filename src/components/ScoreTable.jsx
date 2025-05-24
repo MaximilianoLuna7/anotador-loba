@@ -47,9 +47,8 @@ function ScoreTable({
   return (
     <div className="w-full">
       <form onSubmit={handleSubmit} className="w-full">
-        {/* Solo la tabla se desplaza horizontalmente */}
-        <div className="overflow-x-auto">
-          <table className="table-auto border text-xs sm:text-sm text-center bg-white shadow-md rounded min-w-max">
+        <div className="overflow-x-auto w-full">
+          <table className="table-auto border text-xs sm:text-sm text-center bg-white shadow-md rounded min-w-max w-fit mx-auto">
             <thead className="bg-gray-200 sticky top-0 z-10">
               <tr>
                 <th className="px-1 sm:px-2 py-2 sticky left-0 bg-gray-200 z-20">
@@ -148,14 +147,12 @@ function ScoreTable({
           </table>
         </div>
 
-        {/* Mensaje de error */}
         {error && (
           <div className="mt-3 text-red-600 text-sm bg-red-100 border border-red-300 rounded px-3 py-2">
             {error}
           </div>
         )}
 
-        {/* Botón de guardar ronda */}
         <div className="mt-4">
           <button
             type="submit"
@@ -165,7 +162,6 @@ function ScoreTable({
           </button>
         </div>
 
-        {/* Botones adicionales */}
         <div className="flex flex-col sm:flex-row sm:justify-between gap-2 mt-4">
           <button
             type="button"
@@ -192,7 +188,6 @@ function ScoreTable({
           </button>
         </div>
 
-        {/* Modal para agregar jugador */}
         {showAddModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-white p-4 rounded shadow w-full max-w-sm">

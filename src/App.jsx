@@ -206,7 +206,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div className="min-h-screen bg-gray-100 p-4 relative">
       <h1 className="text-3xl font-bold text-center mb-6">Anotador Loba</h1>
 
       {!gameStarted ? (
@@ -271,6 +271,11 @@ function App() {
           )}
         </>
       )}
+
+      {/* Marca de agua */}
+      <div className="absolute bottom-2 right-2 text-xs text-gray-400 opacity-50 pointer-events-none select-none">
+        Hecho por Maxi
+      </div>
     </div>
   );
 }
