@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UserPlus, ListOrdered, SquareX, Save } from "lucide-react";
 
 function ScoreTable({
@@ -19,6 +19,14 @@ function ScoreTable({
   const [newPlayerName, setNewPlayerName] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (showAddModal || document.body.classList.contains("overflow-hidden")) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+  }, [showAddModal]);
 
   const handleChange = (id, value) => {
     const intVal = parseInt(value);
