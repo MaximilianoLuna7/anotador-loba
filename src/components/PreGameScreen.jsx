@@ -16,6 +16,7 @@ function PreGameScreen({
   const [showHistory, setShowHistory] = useState(false);
   const [selectedDetail, setSelectedDetail] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [dealerId, setDealerId] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -26,7 +27,9 @@ function PreGameScreen({
   };
 
   const handleStart = () => {
-    onStartGame(limit);
+    const limitValue = limit;
+    const selectedDealerId = dealerId || players[0]?.id;
+    onStartGame(limitValue, selectedDealerId);
   };
 
   const handleEditConfirm = (id) => {
@@ -137,6 +140,28 @@ function PreGameScreen({
           className="w-full border px-3 py-2 rounded"
         />
       </div>
+
+      {players.length > 1 && (
+        <div className="mb-4">
+          <label className="block text-sm font-semibold mb-1">
+            ¿Quién reparte primero?
+          </label>
+          <select
+            value={dealerId || ""}
+            onChange={(e) => setDealerId(Number(e.target.value))}
+            className="w-full border px-3 py-2 rounded"
+          >
+            <option value="" disabled>
+              Seleccionar jugador
+            </option>
+            {players.map((player) => (
+              <option key={player.id} value={player.id}>
+                {player.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <button
         onClick={handleStart}

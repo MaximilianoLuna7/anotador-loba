@@ -61,11 +61,10 @@ function App() {
     setPlayers((prev) => prev.filter((p) => p.id !== id));
   };
 
-  const handleStartGame = (limit) => {
+  const handleStartGame = (limit, dealerId) => {
     setMaxPoints(limit);
     setGameStarted(true);
-    const firstDealer = players[0]?.id || null;
-    setNextDealerId(firstDealer);
+    setNextDealerId(dealerId || players[0]?.id || null);
   };
 
   const handleNewRound = (points) => {
