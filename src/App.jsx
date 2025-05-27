@@ -3,7 +3,7 @@ import { useState } from "react";
 import PreGameScreen from "./components/PreGameScreen";
 import ScoreTable from "./components/ScoreTable";
 import EndGameSummary from "./components/EndGameSummary";
-import PlayerDraggableList from "./components/PlayerDraggableList";
+import PlayerReorderModal from "./components/PlayerReorderModal";
 
 function App() {
   const [players, setPlayers] = useState([]);
@@ -252,25 +252,12 @@ function App() {
                   Reordenar jugadores
                 </h2>
 
-                <PlayerDraggableList
+                <PlayerReorderModal
                   players={tempReorder}
                   onReorder={setTempReorder}
+                  onCancel={cancelReorder}
+                  onConfirm={confirmReorder}
                 />
-
-                <div className="flex justify-end gap-2 mt-4">
-                  <button
-                    onClick={cancelReorder}
-                    className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    onClick={confirmReorder}
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                  >
-                    Confirmar orden
-                  </button>
-                </div>
               </div>
             </div>
           )}
