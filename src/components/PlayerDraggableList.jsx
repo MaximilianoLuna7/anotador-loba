@@ -44,10 +44,10 @@ function PlayerDraggableList({ players, onReorder }) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        delay: 200,
-        tolerance: 5,
+        distance: 10, // mejor para mobile
       },
     }),
+
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })

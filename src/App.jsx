@@ -1,3 +1,4 @@
+// App.jsx
 import { useState } from "react";
 import PreGameScreen from "./components/PreGameScreen";
 import ScoreTable from "./components/ScoreTable";
@@ -241,8 +242,12 @@ function App() {
           )}
 
           {showReorderModal && (
-            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-              <div className="bg-white p-4 rounded shadow-lg w-full max-w-md">
+            <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+              <div
+                className="absolute inset-0 z-0"
+                onClick={cancelReorder}
+              ></div>
+              <div className="bg-white p-4 rounded shadow-lg w-full max-w-md z-10 relative">
                 <h2 className="text-lg font-semibold mb-2 text-center">
                   Reordenar jugadores
                 </h2>
