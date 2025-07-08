@@ -14,6 +14,7 @@ function App() {
   const [winner, setWinner] = useState(null);
   const [showReorderModal, setShowReorderModal] = useState(false);
   const [tempReorder, setTempReorder] = useState([]);
+  const [diezMenosRecords, setDiezMenosRecords] = useState({});
 
   const resolveActualDealer = (players, nextDealerId) => {
     const jugador = players.find((p) => p.id === nextDealerId);
@@ -83,7 +84,7 @@ function App() {
 
     setPlayers(updatedPlayers);
     setRounds((prev) => [...prev, points]);
-
+    setDiezMenosRecords((prev) => ({ ...prev, [rounds.length]: [] }));
     checkForWinner(updatedPlayers);
 
     const dealerIndex = players.findIndex((p) => p.id === nextDealerId);
@@ -111,6 +112,7 @@ function App() {
     setGameStarted(false);
     setNextDealerId(null);
     setWinner(null);
+    setDiezMenosRecords({});
   };
 
   const handleForceEnd = () => {
@@ -128,14 +130,9 @@ function App() {
   };
 
   const handleEnganchar = (id) => {
-    const currentTotals = players.map((p) => ({
-      ...p,
-      total: rounds.reduce((acc, round) => acc + (round[p.id] || 0), 0),
-    }));
-
     const maxScore = Math.max(
-      ...currentTotals
-        .filter((p) => p.id !== id && p.total < maxPoints && !p.disabled)
+      ...players
+        .filter((p) => p.id !== id && !p.disabled && !p.isOut)
         .map((p) => p.total)
     );
 
@@ -158,15 +155,8 @@ function App() {
   const handleAddNewPlayerDuringGame = (name) => {
     if (!name) return;
 
-    const currentTotals = players.map((p) => ({
-      ...p,
-      total: rounds.reduce((acc, r) => acc + (r[p.id] || 0), 0),
-    }));
-
     const maxScore = Math.max(
-      ...currentTotals
-        .filter((p) => !p.isOut && !p.disabled)
-        .map((p) => p.total)
+      ...players.filter((p) => !p.disabled).map((p) => p.total)
     );
 
     const newPlayer = {
@@ -205,6 +195,25 @@ function App() {
     setShowReorderModal(false);
   };
 
+  const handleApplyDiezMenos = (playerId) => {
+    const currentRoundIndex = rounds.length;
+    if (diezMenosRecords[currentRoundIndex]?.includes(playerId)) return;
+
+    const updatedPlayers = players.map((p) =>
+      p.id === playerId ? { ...p, total: p.total - 10 } : p
+    );
+    setPlayers(updatedPlayers);
+
+    setDiezMenosRecords((prev) => {
+      const updated = { ...prev };
+      if (!updated[currentRoundIndex]) {
+        updated[currentRoundIndex] = [];
+      }
+      updated[currentRoundIndex].push(playerId);
+      return updated;
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-4 relative">
       <h1 className="text-3xl font-bold text-center mb-6">Anotador Loba</h1>
@@ -229,6 +238,8 @@ function App() {
             onAddNewPlayer={handleAddNewPlayerDuringGame}
             onReorderClick={openReorderModal}
             onToggleDisable={handleToggleDisable}
+            onApplyDiezMenos={handleApplyDiezMenos}
+            lastRoundDiezMenos={diezMenosRecords}
           />
 
           {winner && (
@@ -263,7 +274,6 @@ function App() {
         </>
       )}
 
-      {/* Marca de agua */}
       <div className="absolute bottom-2 right-2 text-xs text-gray-400 opacity-50 pointer-events-none select-none">
         Hecho por Maxi
       </div>

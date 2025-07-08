@@ -11,6 +11,8 @@ function ScoreTable({
   onAddNewPlayer,
   onReorderClick,
   onToggleDisable,
+  onApplyDiezMenos,
+  lastRoundDiezMenos,
 }) {
   const [inputs, setInputs] = useState(
     players.reduce((acc, p) => ({ ...acc, [p.id]: "" }), {})
@@ -62,21 +64,42 @@ function ScoreTable({
                 <th className="px-1 sm:px-2 py-2 sticky left-0 bg-gray-200 z-20">
                   Ronda
                 </th>
-                {players.map((p) => (
-                  <th
-                    key={p.id}
-                    className={`px-1 sm:px-2 py-2 whitespace-nowrap ${
-                      p.disabled ? "bg-gray-300 text-gray-500" : "bg-gray-200"
-                    }`}
-                  >
-                    {p.name}
-                    {p.id === dealerId && (
-                      <span className="ml-1 text-blue-600">🔄</span>
-                    )}
-                  </th>
-                ))}
+                {players.map((p, idx) => {
+                  const dealerIndex = players.findIndex(
+                    (pl) => pl.id === dealerId
+                  );
+                  const leftOfDealerIndex =
+                    (dealerIndex - 1 + players.length) % players.length;
+                  const isDealer = p.id === dealerId;
+                  const isLeftOfDealer = idx === leftOfDealerIndex;
+
+                  return (
+                    <th
+                      key={p.id}
+                      className={`px-1 sm:px-2 py-2 whitespace-nowrap ${
+                        p.disabled ? "bg-gray-300 text-gray-500" : "bg-gray-200"
+                      }`}
+                    >
+                      <div className="flex items-center justify-center gap-1">
+                        {p.name}
+                        {isDealer && <span className="text-blue-600">🔄</span>}
+                        {isLeftOfDealer && (
+                          <button
+                            type="button"
+                            onClick={() => onApplyDiezMenos(p.id)}
+                            className="bg-red-500 hover:bg-red-600 text-white text-[10px] px-1 py-0.5 rounded font-semibold"
+                            title="Aplicar diez menos"
+                          >
+                            -10
+                          </button>
+                        )}
+                      </div>
+                    </th>
+                  );
+                })}
               </tr>
             </thead>
+
             <tbody>
               {rounds.map((round, i) => (
                 <tr key={i} className="border-t">
@@ -86,6 +109,9 @@ function ScoreTable({
                   {players.map((p) => (
                     <td key={p.id} className="px-1 sm:px-2 py-1">
                       {round[p.id] === 0 ? "Loba" : round[p.id] ?? "-"}
+                      {lastRoundDiezMenos?.[i]?.includes(p.id) && (
+                        <span className="ml-1 text-red-600 text-xs">(-10)</span>
+                      )}
                     </td>
                   ))}
                 </tr>
